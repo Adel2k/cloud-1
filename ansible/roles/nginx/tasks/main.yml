@@ -6,7 +6,7 @@
 
 - name: Copy NGINX config file
   copy:
-    src: ../../../../nginx/conf.d/default.conf
+    src: ../files/conf.d/default.conf
     dest: /home/ubuntu/cloud-1/nginx/conf.d/default.conf
     mode: 0644
 

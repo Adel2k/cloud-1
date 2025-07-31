@@ -1,43 +1,53 @@
 services:
   wordpress:
-    image: wordpress:latest
+    build: ./wordpress/
+    image: wordpress
     container_name: wordpress
     restart: unless-stopped
     volumes:
       - wp_data:/var/www/html
+    depends_on:
+      - db
     networks:
       - wp_net
+    env_file:
+      - .env
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     restart: unless-stopped
     environment:
       PMA_HOST: db
     networks:
       - wp_net
+    env_file:
+      - .env
 
   db:
     image: mysql:8.0
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wpuser
-      MYSQL_PASSWORD: wppass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - wp_net
+    env_file:
+      - .env
 
   nginx:
     image: nginx:latest
     container_name: nginx
     restart: unless-stopped
     volumes:
-      - ../nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - wp_data:/var/www/html
-      - ../certs:/etc/nginx/certs
+      - ./certs:/etc/nginx/certs
     ports:
       - "80:80"
       - "443:443"

@@ -1,0 +1,5 @@
+- name: Copy wordpress files
+  copy:
+    src: ../files/
+    dest: /home/ubuntu/cloud-1/wordpress
+    mode: 0644

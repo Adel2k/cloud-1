@@ -7,5 +7,7 @@
 
   roles:
     - docker
+    - wordpress
     - nginx
     - app
+
