@@ -1,0 +1,11 @@
+- name: Deploy WordPress stack
+  hosts: web
+  become: yes
+
+  vars_files:
+    - secrets.yml
+
+  roles:
+    - docker
+    - nginx
+    - app

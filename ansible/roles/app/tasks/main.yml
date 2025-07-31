@@ -1,0 +1,27 @@
+- name: Create docker-compose folder
+  file:
+    path: /home/ubuntu/cloud-1/docker-compose
+    state: directory
+    mode: 0755
+
+- name: Copy project files
+  copy:
+    src: ../../../../docker-compose/
+    dest: /home/ubuntu/cloud-1/docker-compose/
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+
+- name: Create .env file
+  copy:
+    dest: /home/ubuntu/cloud-1/.env
+    content: |
+      MYSQL_ROOT_PASSWORD={{ mysql_root_password }}
+      MYSQL_DATABASE=wordpress
+      MYSQL_USER=wpuser
+      MYSQL_PASSWORD={{ mysql_password }}
+
+- name: Run docker-compose
+  shell: docker-compose up -d
+  args:
+    chdir: /home/ubuntu/cloud-1/docker-compose/

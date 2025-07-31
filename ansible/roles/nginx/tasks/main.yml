@@ -1,0 +1,27 @@
+- name: Create NGINX config folder
+  file:
+    path: /home/ubuntu/cloud-1/nginx/conf.d
+    state: directory
+    mode: 0755
+
+- name: Copy NGINX config file
+  copy:
+    src: ../../../../nginx/conf.d/default.conf
+    dest: /home/ubuntu/cloud-1/nginx/conf.d/default.conf
+    mode: 0644
+
+- name: Create certs directory
+  file:
+    path: /home/ubuntu/cloud-1/certs
+    state: directory
+    mode: 0755
+
+- name: Generate self-signed SSL certificate and key (if not exists)
+  command: >
+    openssl req -x509 -nodes -days 365
+    -newkey rsa:2048
+    -keyout /home/ubuntu/cloud-1/certs/key.pem
+    -out /home/ubuntu/cloud-1/certs/cert.pem
+    -subj "/C=US/ST=Test/L=Test/O=Test/CN=localhost"
+  args:
+    creates: /home/ubuntu/cloud-1/certs/cert.pem
