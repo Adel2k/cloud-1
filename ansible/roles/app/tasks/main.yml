@@ -6,28 +6,20 @@
     group: ubuntu
     mode: 0755
 
-# - name: Create .env file
-#   copy:
-#     dest: /home/ubuntu/cloud-1/.env
-#     content: |
-#       MYSQL_ROOT_PASSWORD={{ mysql_root_password }}
-#       MYSQL_DATABASE=wordpress
-#       MYSQL_USER=wpuser
-#       MYSQL_PASSWORD={{ mysql_password }}
-
 - name: Stop and remove containers, networks, and volumes
   become: yes
   command: docker-compose down -v
   args:
     chdir: /home/ubuntu/cloud-1/
+    
+- name: Generate .env file for docker-compose
+  template:
+    src: env.j2
+    dest: /home/ubuntu/cloud-1/.env
+    mode: '0600'
 
 - name: Run docker-compose
   shell: docker-compose up -d --build
   args:
     chdir: /home/ubuntu/cloud-1/
 
-- name: Generate .env file for docker-compose
-  template:
-    src: env.j2
-    dest: /home/ubuntu/cloud-1/.env
-    mode: '0600'
