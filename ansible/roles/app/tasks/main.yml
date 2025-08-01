@@ -6,12 +6,19 @@
     group: ubuntu
     mode: 0755
 
+- name: Check if any containers exist
+  become: yes
+  shell: docker ps -q
+  register: running_containers
+  changed_when: false
+
 - name: Stop and remove containers, networks, and volumes
   become: yes
   command: docker-compose down -v
   args:
     chdir: /home/ubuntu/cloud-1/
-    
+  when: running_containers.stdout != ""
+
 - name: Generate .env file for docker-compose
   template:
     src: env.j2

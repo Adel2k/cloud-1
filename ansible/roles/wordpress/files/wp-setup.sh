@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -e  # Exit on error
+set -e 
 
 setup_directory() {
-    echo "📁 Setting up directory..."
+    echo "Setting up directory..."
     mkdir -p "$WP_PATH"
     cd "$WP_PATH" || exit 1
     chmod -R 755 "$WP_PATH"
@@ -11,13 +11,13 @@ setup_directory() {
 }
 
 download_wordpress() {
-    echo "⬇️  Downloading WordPress..."
+    echo "Downloading WordPress..."
     rm -rf ./*
     wp core download --allow-root
 }
 
 configure_wordpress() {
-    echo "⚙️  Configuring WordPress..."
+    echo "Configuring WordPress..."
     cp wp-config-sample.php wp-config.php
     sed -i "s/database_name_here/${MYSQL_DATABASE}/" wp-config.php
     sed -i "s/username_here/${MYSQL_USER}/" wp-config.php
@@ -29,7 +29,7 @@ install_wordpress() {
     cd "$WP_PATH"
 
     until wp db check --allow-root &>/dev/null; do
-        echo "🔄 MySQL not ready yet..."
+        echo "MySQL not ready yet..."
         sleep 2
     done
     echo "✅ MySQL is up."
@@ -38,17 +38,17 @@ install_wordpress() {
         echo "❌ Cannot connect to MySQL database. Exiting setup."
         exit 1
     else
-        echo "✅ MySQL connection OK."
+        echo "MySQL connection OK."
     fi
 
     if wp core is-installed --allow-root; then
-        echo "ℹ️  WordPress is already installed."
+        echo "WordPress is already installed."
         return
     fi
 
-    echo "🚀 Installing WordPress core..."
+    echo "Installing WordPress core..."
     wp core install \
-        --url="https://ampik.duckdns.org" \
+        --url="https://ampik1.duckdns.org" \
         --title="$WP_TITLE" \
         --admin_user="$WP_ROOT_USER_USERNAME" \
         --admin_password="$WP_ROOT_USER_PASSWORD" \
@@ -56,41 +56,40 @@ install_wordpress() {
         --skip-email \
         --allow-root
 
-    echo "👤 Creating additional user..."
+    echo "Creating additional user..."
     wp user create "$WP_USER_USERNAME" "$WP_USER_EMAIL" \
         --role="$WP_USER_ROLE" \
         --user_pass="$WP_USER_PASSWORD" \
-        --allow-root || echo "⚠️ User may already exist."
+        --allow-root || echo "User may already exist."
 }
 
 setup_permissions() {
-    echo "🔐 Setting up permissions..."
+    echo "Setting up permissions..."
     chmod -R 755 "$WP_PATH"
     chown -R www-data:www-data "$WP_PATH"
 }
 
 update_wordpress() {
-    echo "⬆️  Updating WordPress..."
-    wp core update --allow-root || echo "⚠️ WordPress update failed."
+    echo "⬆Updating WordPress..."
+    wp core update --allow-root || echo "WordPress update failed."
 }
 
 install_plugins() {
-    echo "🔌 Installing and updating plugins..."
+    echo "Installing and updating plugins..."
     wp plugin install redis-cache --activate --allow-root
     wp plugin update --all --allow-root
 }
 
 cleanup() {
-    echo "🧹 Cleaning up..."
+    echo "Cleaning up..."
     rm -f wp-config-sample.php
 }
 
 start_php() {
-    echo "▶️ Starting PHP-FPM..."
+    echo "Starting PHP-FPM..."
     exec /usr/sbin/php-fpm7.4 -F
 }
 
-# 🛠️ MAIN EXECUTION
 setup_directory
 
 if [ ! -f "$WP_PATH/wp-config.php" ]; then

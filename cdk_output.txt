@@ -1,0 +1,1 @@
+arn:aws:cloudformation:us-east-1:666531395015:stack/Cloud1Stack/e689fec0-6ed8-11f0-a29e-0ecf666b3d31

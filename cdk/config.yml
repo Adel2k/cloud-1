@@ -1,0 +1,7 @@
+region: us-east-1
+instance_type: t2.micro
+key_name: cloud-1
+ami_id: ami-020cba7c55df1f615
+tags:
+  Project: cloud-1
+  Owner: aeminian
