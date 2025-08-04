@@ -3,6 +3,5 @@ certs/
 cdk.out
 cdk.context.json
 __pycache__
-cdk.json
 cdk_output.txt
 ansible/vault_pass.txt

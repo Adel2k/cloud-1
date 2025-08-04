@@ -2,7 +2,10 @@
 
 set -e
 
-touch ansible/vault_pass.txt
+python3 -m venv .env
+source /.env/bin/activate
+pip3 install -r requirements.txt
+touch ansible/vault_pass.txt #for vault pass 
 echo "Deploying infrastructure with CDK..."
 cdk deploy --require-approval never > cdk_output.txt
 
@@ -12,7 +15,7 @@ EIP_DASH="${EIP//./-}"
 
 cat > ansible/inventory.ini <<EOF
 [web]
-ec2-$EIP_DASH.compute-1.amazonaws.com ansible_user=ubuntu ansible_ssh_private_key_file=./cloud-1.pem
+ec2-$EIP_DASH.compute-1.amazonaws.com ansible_user=ubuntu ansible_ssh_private_key_file=./ansible/cloud-1.pem
 EOF
 
 echo "Running Ansible playbook..."
